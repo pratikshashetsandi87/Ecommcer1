@@ -1,0 +1,107 @@
+/* BACKGROUND */
+.modern-cart {
+  padding: 40px;
+  background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+  min-height: 50vh;
+}
+
+/* TITLE */
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+/* GRID */
+.cart-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+}
+
+/* CARD */
+.modern-card {
+  display: flex;
+  align-items: center;
+  /* padding: 15px; */
+  border-radius: 16px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  transition: 0.3s;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+}
+
+/* IMAGE */
+.modern-card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+}
+
+/* INFO */
+.info {
+  flex: 1;
+  padding: 0 15px;
+}
+
+.info h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.info p {
+  font-size: 13px;
+  color: #666;
+}
+
+.info span {
+  color: green;
+  font-weight: bold;
+}
+
+/* REMOVE BUTTON */
+.modern-card button {
+  border: none;
+  background: #ff4d4f;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* SUMMARY */
+.summary {
+  padding: 25px;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.summary h1 {
+  color: green;
+}
+
+/* PAY BUTTON */
+.pay {
+  width: 90%;
+  padding: 12px;
+  background: linear-gradient(45deg, #00c853, #00e676);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  margin-top: 2px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 400px) {
+  .cart-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,74 @@
+/* =========================
+   CONTAINER
+========================= */
+.categories-container {
+  padding: 40px 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ center everything */
+}
+
+/* =========================
+   HEADING
+========================= */
+.categories-heading {
+  font-size: 28px;
+  font-weight: 600;
+  /* margin-bottom: 30px; */
+  color: #333;
+  text-align: center;
+}
+
+/* =========================
+   GRID CENTER FIX
+========================= */
+.list-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;   /* ✅ horizontal center */
+  align-items: center;       /* ✅ vertical alignment */
+  gap: 20px;
+  max-width: 900px;          /* ✅ keeps grid centered */
+}
+
+/* =========================
+   CARD
+========================= */
+.list-group-item {
+  width: 220px;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+
+  transition: 0.3s ease;
+}
+
+/* Hover */
+.list-group-item:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  color: #fff;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .list-group {
+    max-width: 100%;
+  }
+
+  .list-group-item {
+    width: 90%;
+  }
+}

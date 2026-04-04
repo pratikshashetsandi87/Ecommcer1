@@ -1,0 +1,58 @@
+/* MAIN CONTAINER */
+.dashboard-container {
+  padding: 15px;
+}
+
+/* REMOVE EXTRA GAP */
+.dashboard-row {
+  margin: 0;
+}
+
+/* SIDEBAR */
+.dashboard-menu {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* RIGHT CONTENT */
+.dashboard-content {
+  padding: 10px;
+}
+
+/* CARD (FINAL COMPACT) */
+.dashboard-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 15px;   /* 👈 small size */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  max-width: 380px;     /* 👈 width control */
+}
+
+/* EACH ROW */
+.user-row {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  margin: 5px 0;   /* 👈 spacing kami */
+  color: #333;
+}
+
+/* LABEL */
+.user-row span {
+  min-width: 75px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 8px;
+  }
+
+  .dashboard-card {
+    padding: 10px;
+  }
+}

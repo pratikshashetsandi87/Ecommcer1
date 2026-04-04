@@ -1,0 +1,135 @@
+/* =========================
+   NAVBAR BASE
+========================= */
+.navbar {
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
+
+/* BRAND */
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0d6efd !important;
+  letter-spacing: 0.5px;
+}
+
+/* NAV LINKS */
+.navbar-nav .nav-link {
+  color: #333 !important;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 8px;
+  transition: 0.3s ease;
+  position: relative;
+}
+
+/* HOVER EFFECT */
+.navbar-nav .nav-link:hover {
+  color: #0d6efd !important;
+}
+
+/* UNDERLINE ANIMATION */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: #0d6efd;
+  transition: 0.3s;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+/* ACTIVE LINK */
+.navbar-nav .nav-link.active {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+.dropdown-menu {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-item {
+  font-size: 14px;
+  padding: 8px 15px;
+  transition: 0.2s;
+}
+
+/* HOVER */
+.dropdown-item:hover {
+  background: #f1f5ff;
+  color: #0d6efd;
+}
+
+/* =========================
+   BADGE (CART)
+========================= */
+.ant-badge-count {
+  background: #0d6efd !important;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* CENTER ALL NAV ITEMS */
+.navbar .container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* 👈 center everything */
+  position: relative;
+}
+
+/* BRAND LEFT */
+.navbar-brand {
+  position: absolute;
+  left: 20px;
+}
+
+/* NAV LINKS CENTER */
+.navbar-nav {
+  margin: 0 auto;   /* 👈 center links */
+}
+
+/* OPTIONAL: spacing */
+.navbar-nav .nav-item {
+  margin: 0 10px;
+}
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: left;
+    padding-top: 10px;
+  }
+
+  .navbar-nav .nav-link {
+    margin: 5px 0;
+  }
+}
