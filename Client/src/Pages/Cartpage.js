@@ -21,7 +21,7 @@ const CartPage = () => {
   // ================= TOTAL =================
   const totalPrice = () => {
     const total = cart.reduce((sum, item) => sum + item.price, 0);
-    return `₹ ${total}`;
+    return `₹ ${total.toFixed(2)}`;
   };
 
   // ================= REMOVE ITEM =================

@@ -12,8 +12,8 @@ export default function useCategory() {
 
       console.log("Fetched categories:", data);
 
-      // ✅ FIXED LINE
-      setCategories(data?.category || []);
+      // ✅ FIXED: Handle both 'categories' and 'category'
+      setCategories(data?.categories || data?.category || []);
 
     } catch (error) {
       console.log(error);

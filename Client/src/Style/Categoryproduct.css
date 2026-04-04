@@ -1,8 +1,8 @@
 .container {
-  margin-top: 30px;
+  margin-top: 20px;
   padding: 20px;
   max-width: 1200px;
-  margin: 30px auto; /* Center the container */
+  margin: 20px auto; /* Center + reduced top gap */
 }
 
 .category {
@@ -11,6 +11,7 @@
 
 .card {
   width: 310px;
+  max-width: 100%;
   border: 1px solid #ddd;
   border-radius: 10px;
   overflow: hidden;
@@ -121,4 +122,16 @@
 
 .offset-md-1 {
   margin-left: 8.333333%;
+}
+
+/* ✅ Mobile responsive cards */
+@media (max-width: 768px) {
+  .card {
+    width: 90%;
+    height: auto;
+  }
+  
+  .d-flex {
+    justify-content: center;
+  }
 }

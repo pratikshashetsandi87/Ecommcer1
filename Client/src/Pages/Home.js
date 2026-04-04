@@ -106,10 +106,8 @@ const HomePage = () => {
     }
   };
 
-  const handleAddToCart = (product) => {
-    const updatedCart = [...cart, product];
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+const handleAddToCart = (product) => {
+    addToCart(product);
     toast.success("Item Added To Cart");
   };
 
