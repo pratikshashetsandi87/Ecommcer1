@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../Layout/Layout";
-import axios from "axios";
 import { useCart } from "../Context/Cart";
 import { toast } from "react-toastify";
+import api from "../api"; // ✅ ADD THIS
 
 const CategoryProduct = () => {
   const params = useParams();
@@ -24,9 +24,10 @@ const CategoryProduct = () => {
     try {
       setLoading(true);
 
-      const { data } = await axios.get(
-        `https://watchecom-backend.onrender.com/api/product/product-category/${params.slug}`
-      );
+     const { data } = await api.get(
+  `/product/product-category/${params.slug}`
+);
+
 
       setProducts(data?.products || []);
       setLoading(false);
