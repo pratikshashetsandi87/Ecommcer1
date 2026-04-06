@@ -14,45 +14,58 @@ dotenv.config();
 // App
 const app = express();
 
-// ✅ CORS FIX (VERY IMPORTANT)
+// ================= CORS FIX (FINAL) =================
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://watchecom-frontend1.onrender.com", // ✅ IMPORTANT
+  "https://watchecom-frontend2.onrender.com",
+  "https://watchecom-frontend1.vercel.app"
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://watchecom-frontend1.onrender.com", // ✅ ADD THIS
-      "https://watchecom-frontend2.onrender.com",
-      "https://watchecom-frontend1.vercel.app"
-    ],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
 
+// ✅ PREFLIGHT FIX (VERY IMPORTANT)
+app.options("*", cors());
+
 // Middlewares
 app.use(express.json());
 
-// ✅ MongoDB Connection
+// ================= DB =================
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log("DB Error:", err));
 
-// Routes
+// ================= ROUTES =================
 app.use("/api/auth", authRoutes);
 app.use("/api/category", CategoryRouter);
 app.use("/api/product", ProductRoutes);
 
-// Test route
+// ================= TEST =================
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
-// Health check
+// ================= HEALTH =================
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-// Server
+// ================= SERVER =================
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
