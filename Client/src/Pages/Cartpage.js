@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DropIn from "braintree-web-drop-in-react";
-import api from "../api.js";
+import api from "../api";
 import { useCart } from "../Context/Cart";
 import { useAuth } from "../Context/auth";
 import { useNavigate } from "react-router-dom";
