@@ -27,7 +27,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import Orders from './User/Order';
 import UpdateProduct from './Pages/Admin/UpdateProduct';
 import AdminOrders from './Pages/Admin/Adminorder';
+import CategoryProduct from './Pages/Categoryproduct';
 // import UpdateProduct from './Pages/Admin/UpdateProduct';
+// import CategoryProduct from "./Pages/Categoryproduct";
 
 
 
@@ -41,8 +43,11 @@ function App() {
         <Route path='/product/:slug' element={<ProductDetails />} />
 
         <Route path="/categories" element={<Categories />} />
-        <Route path="/category/:slug" element={<ProductDetails />} />
+        {/* <Route path="/category/:slug" element={<ProductDetails />} /> */}
         <Route path='cart' element={<CartPage />} />
+    <Route path="/product/:slug" element={<ProductDetails />} />  {/* ✅ FIXED */}
+<Route path="/category/:slug" element={<CategoryProduct />} />
+        
 
 
         <Route path='contact' element={<Contact />} />

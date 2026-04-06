@@ -12,34 +12,33 @@ body {
    BANNER
 ========================= */
 .banner-img {
-  margin-top: 0; /* FIXED excessive gap with header */
+  margin-top: 0;
   border-radius: 12px;
   transition: 0.3s;
 }
 
 .banner-img:hover {
-  transform: scale(1.02); /* FIXED (was 5.02 ❌) */
+  transform: scale(1.02);
 }
 
 /* =========================
-   HOME GRID
+   GRID
 ========================= */
 .home-page {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  justify-content: center;
-  min-height: 60vh;
 }
 
 /* =========================
    CARD
 ========================= */
 .home-page .card {
-  width: 260px;
+  width: 100%;
   height: 420px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-radius: 12px;
   overflow: hidden;
   background: #fff;
@@ -55,17 +54,20 @@ body {
    IMAGE
 ========================= */
 .home-page .card-img-top {
-  height: 190px;
+  height: 200px;
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f8f8f8;
+  padding: 10px;
 }
 
 /* =========================
-   CARD BODY
+   BODY
 ========================= */
 .home-page .card-body {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   height: 100%;
   padding: 10px;
 }
@@ -76,8 +78,7 @@ body {
 .home-page .card-title {
   font-size: 15px;
   font-weight: 600;
-  height: 40px;
-  overflow: hidden;
+  min-height: 40px;
 }
 
 .home-page .card-text {
@@ -155,7 +156,6 @@ body {
   overflow-y: auto;
 }
 
-/* Heading */
 .filters h4 {
   font-size: 16px;
   font-weight: 600;
@@ -166,21 +166,13 @@ body {
   padding-bottom: 5px;
 }
 
-/* Checkbox & Radio */
 .ant-checkbox-wrapper,
 .ant-radio-wrapper {
   display: block;
   margin: 5px 0;
   font-size: 13px;
-  color: #555;
 }
 
-.ant-checkbox-wrapper:hover,
-.ant-radio-wrapper:hover {
-  color: #007bff;
-}
-
-/* RESET BUTTON */
 .filters button {
   margin-top: 15px;
   width: 100%;
@@ -190,10 +182,6 @@ body {
   border: none;
   background: linear-gradient(45deg, #ff4b2b, #ff416c);
   color: white;
-}
-
-.filters button:hover {
-  transform: scale(1.03);
 }
 
 /* =========================
@@ -207,7 +195,6 @@ body {
   }
 
   .home-page .card {
-    width: 90%;
     height: auto;
   }
 }

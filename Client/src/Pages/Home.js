@@ -14,115 +14,104 @@ const { Search } = Input;
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { cart, setCart } = useCart();
+  const { addToCart } = useCart();
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
   const { auth } = useAuth();
 
-  // ================= API =================
+  // LOAD
   useEffect(() => {
     getAllCategory();
-    getTotal();
     getAllProducts();
   }, []);
 
+  // CATEGORY
   const getAllCategory = async () => {
     try {
       const { data } = await api.get("/category/getall-category");
-
-      // ✅ FIX
-      if (data.success) setCategories(data?.categories || []);
+      setCategories(data?.categories || []);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // PRODUCTS
   const getAllProducts = async () => {
     try {
-      setLoading(true);
-
       const { data } = await api.get("/product/getall-product");
-
-      // ✅ FIX
       setProducts(data?.products || []);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
-
-  const getTotal = async () => {
-    try {
-      const { data } = await api.get("/product/product-count");
-
-      setTotal(data?.total || 0);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // ================= FILTER =================
+  // FILTER
   const handleFilter = (value, id) => {
     let all = [...checked];
     if (value) {
-      all.push(id);
+      if (!all.includes(id)) all.push(id);
     } else {
       all = all.filter((c) => c !== id);
     }
     setChecked(all);
   };
 
+  // FILTER LOGIC
   useEffect(() => {
-    if (!checked.length && !radio.length && !searchQuery) {
-      getAllProducts();
-    } else {
+    if (checked.length > 0 || radio.length > 0 || searchQuery !== "") {
       filterProduct();
+    } else {
+      getAllProducts();
     }
   }, [checked, radio, searchQuery]);
 
   const filterProduct = async () => {
     try {
-      const { data } = await api.post("/product/product-filters",
-        { checked, radio, searchQuery }
-      );
-
+      const { data } = await api.post("/product/product-filters", {
+        checked,
+        radio,
+        searchQuery,
+      });
       setProducts(data?.products || []);
     } catch (error) {
       console.log(error);
     }
   };
 
-const handleAddToCart = (product) => {
+  // CART
+  const handleAddToCart = (product) => {
     addToCart(product);
     toast.success("Item Added To Cart");
   };
 
-  // ================= UI =================
   return (
-    <Layout title="All Products - Best offers">
+    <Layout title="All Products">
+
       {/* BANNER */}
       <img
         src="https://github.com/techinfo-youtube/ecommerce-app-2023/blob/15-admin-orders-css/client/public/images/banner.png?raw=true"
-        className="banner-img"
         alt="banner"
-        width="100%"
+        style={{
+          width: "100%",
+          borderRadius: "10px",
+          marginBottom: "20px"
+        }}
       />
 
       <div className="container-fluid mt-3">
         <div className="row">
 
-          {/* FILTER SIDEBAR */}
+          {/* FILTER */}
           <div className="col-md-3">
             <div className="filters">
-              <h4>Filter By Category</h4>
-              {categories?.map((c) => (
+
+              <h4>Category</h4>
+              {categories.map((c) => (
                 <Checkbox
                   key={c._id}
                   onChange={(e) => handleFilter(e.target.checked, c._id)}
@@ -131,9 +120,9 @@ const handleAddToCart = (product) => {
                 </Checkbox>
               ))}
 
-              <h4>Filter By Price</h4>
+              <h4>Price</h4>
               <Radio.Group onChange={(e) => setRadio(e.target.value)}>
-                {Prices?.map((p) => (
+                {Prices.map((p) => (
                   <Radio key={p._id} value={p.array}>
                     {p.name}
                   </Radio>
@@ -141,6 +130,7 @@ const handleAddToCart = (product) => {
               </Radio.Group>
 
               <button
+                style={{ marginTop: "10px" }}
                 onClick={() => {
                   setChecked([]);
                   setRadio([]);
@@ -148,15 +138,27 @@ const handleAddToCart = (product) => {
                   getAllProducts();
                 }}
               >
-                RESET FILTERS
+                Reset Filters
               </button>
+
             </div>
           </div>
 
           {/* PRODUCTS */}
           <div className="col-md-9">
-            <h1 className="text-center">All Products</h1>
 
+            {/* HEADING */}
+            <h1
+              style={{
+                textAlign: "center",
+                marginBottom: "20px",
+                fontWeight: "600"
+              }}
+            >
+              All Products
+            </h1>
+
+            {/* SEARCH */}
             <Search
               placeholder="Search products"
               enterButton
@@ -164,59 +166,99 @@ const handleAddToCart = (product) => {
               style={{ marginBottom: "15px" }}
             />
 
+            {/* GRID */}
             <div className="home-page">
-              {products?.map((p) => (
-                <div className="card" key={p._id}>
-                  
-                  {/* ✅ FIXED IMAGE URL */}
+
+              {products.map((p) => (
+                <div
+                  key={p._id}
+                  style={{
+                    background: "#fff",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: "420px",
+                    padding: "10px"
+                  }}
+                >
+
+                  {/* IMAGE */}
                   <img
-                    src={`https://watchecom-backend.onrender.com/api/auth/product/getproduct-photo/${p._id}`}
-                    className="card-img-top"
+                    src={`https://watchecom-backend.onrender.com/api/product/getproduct-photo/${p._id}`}
                     alt={p.name}
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      objectFit: "contain",
+                      background: "#f5f5f5"
+                    }}
                   />
 
-                  <div className="card-body">
-                    <h5 className="card-title">{p.name}</h5>
+                  {/* TEXT */}
+                  <h5>{p.name}</h5>
 
-                    <p className="card-text">
-                      {p.description?.substring(0, 40)}...
-                    </p>
+                  <p style={{
+  fontSize: "13px",
+  color: "#666",
+  height: "40px",
+  overflow: "hidden"
+}}>
+  {p.description?.substring(0, 40)}...
+</p>
 
-                    <p className="card-price">₹ {p.price}</p>
+                  <p style={{ color: "green", fontWeight: "bold" }}>
+                    ₹ {p.price}
+                  </p>
 
-                    <div className="card-buttons">
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => navigate(`/product/${p.slug}`)}
-                      >
-                        More Details
-                      </button>
+                  {/* BUTTONS */}
+                 <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginTop: "10px"
+  }}
+>
 
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => handleAddToCart(p)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
+  <button
+    style={{
+      padding: "8px",
+      border: "none",
+      borderRadius: "6px",
+      background: "#007bff",
+      color: "#fff",
+      cursor: "pointer"
+    }}
+    onClick={() => navigate(`/product/${p.slug}`)}
+  >
+    View Details
+  </button>
+
+  <button
+    style={{
+      padding: "8px",
+      border: "none",
+      borderRadius: "6px",
+      background: "#28a745",
+      color: "#fff",
+      cursor: "pointer"
+    }}
+    onClick={() => handleAddToCart(p)}
+  >
+    Add to Cart
+  </button>
+
+</div>
+
                 </div>
               ))}
+
             </div>
 
-            {/* LOAD MORE */}
-            {products.length < total && (
-              <div className="text-center mt-3">
-                <button
-                  className="btn btn-warning"
-                  onClick={() => setPage(page + 1)}
-                >
-                  {loading ? "Loading..." : "Load More"}
-                </button>
-              </div>
-            )}
           </div>
-
         </div>
       </div>
 

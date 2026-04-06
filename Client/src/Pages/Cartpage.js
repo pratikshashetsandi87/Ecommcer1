@@ -6,7 +6,6 @@ import { useAuth } from "../Context/auth";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Layout from "../Layout/Layout";
-import "../Style/Cartpage.css";
 
 const CartPage = () => {
   const [clientToken, setClientToken] = useState("");
@@ -18,13 +17,11 @@ const CartPage = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
 
-  // ================= TOTAL =================
   const totalPrice = () => {
     const total = cart.reduce((sum, item) => sum + item.price, 0);
     return `₹ ${total.toFixed(2)}`;
   };
 
-  // ================= REMOVE ITEM =================
   const removeItem = (id) => {
     const updated = cart.filter((p) => p._id !== id);
     setCart(updated);
@@ -32,35 +29,28 @@ const CartPage = () => {
     toast.success("Removed from cart");
   };
 
-  // ================= GET TOKEN =================
   useEffect(() => {
     const getToken = async () => {
       try {
         if (!auth?.token) return;
-
-        const { data } = await api.get('/product/braintree/token');
+        const { data } = await api.get("/product/braintree/token");
         setClientToken(data?.clientToken);
       } catch (error) {
         console.log(error);
       }
     };
-
     getToken();
   }, [auth?.token]);
 
-  // ================= IMAGE ERROR =================
   const handleImageError = (id) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
   };
 
   const getImageSrc = (p) => {
     if (imageErrors[p._id]) return "/placeholder-image.jpg";
-
-    // ✅ FIXED IMAGE URL
-    return `https://watchecom-backend.onrender.com/api/auth/product/getproduct-photo/${p._id}`;
+    return `https://watchecom-backend.onrender.com/api/product/getproduct-photo/${p._id}`;
   };
 
-  // ================= PAYMENT =================
   const handlePayment = async () => {
     if (!auth?.token) {
       toast.error("Login first");
@@ -68,17 +58,14 @@ const CartPage = () => {
       return;
     }
 
-    if (!instance) return; // ✅ safety
-
     try {
       setLoading(true);
-
       const { nonce } = await instance.requestPaymentMethod();
 
-      const { data } = await api.post(
-        "/product/braintree/payment",
-        { nonce, cart }
-      );
+      const { data } = await api.post("/product/braintree/payment", {
+        nonce,
+        cart,
+      });
 
       setLoading(false);
 
@@ -90,51 +77,103 @@ const CartPage = () => {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
       toast.error("Payment failed");
     }
   };
 
   return (
     <Layout>
-      <div className="modern-cart">
+      <div style={{
+        padding: "30px",
+        background: "#f5f7fa",
+        minHeight: "100vh"
+      }}>
 
-        <h1 className="title"></h1>
+        <h1 style={{
+          textAlign: "center",
+          marginBottom: "30px",
+          fontWeight: "600"
+        }}>
+          Your Cart
+        </h1>
 
-        <div className="cart-grid">
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "30px"
+        }}>
 
           {/* ================= ITEMS ================= */}
-          <div className="cart-items">
-            {cart.map((p) => (
-              <div className="modern-card" key={p._id}>
+          <div>
+            {cart.length === 0 ? (
+              <p style={{ textAlign: "center" }}>Cart is empty</p>
+            ) : (
+              cart.map((p) => (
+                <div key={p._id} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  background: "#fff",
+                  borderRadius: "12px",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+                }}>
 
-                <img
-                  src={getImageSrc(p)}
-                  alt={p.name}
-                  onError={() => handleImageError(p._id)}
-                />
+                  {/* IMAGE */}
+                  <img
+                    src={getImageSrc(p)}
+                    alt={p.name}
+                    onError={() => handleImageError(p._id)}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "contain",
+                      borderRadius: "10px",
+                      marginRight: "15px"
+                    }}
+                  />
 
-                <div className="info">
-                  <h4>{p.name}</h4>
+                  {/* INFO */}
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{ margin: "0 0 5px" }}>{p.name}</h4>
+                    <p style={{ fontSize: "13px", color: "#666" }}>
+                      {p.description?.substring(0, 40)}...
+                    </p>
+                    <h5 style={{ color: "green" }}>₹ {p.price}</h5>
+                  </div>
 
-                  {/* ✅ SAFE */}
-                  <p>{p.description?.substring(0, 40)}...</p>
+                  {/* REMOVE */}
+                  <button
+                    onClick={() => removeItem(p._id)}
+                    style={{
+                      border: "none",
+                      background: "red",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    ✕
+                  </button>
 
-                  <span>₹ {p.price}</span>
                 </div>
-
-                <button onClick={() => removeItem(p._id)}>
-                  ✕
-                </button>
-
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* ================= SUMMARY ================= */}
-          <div className="summary">
+          <div style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            height: "fit-content"
+          }}>
+
             <h2>Total</h2>
-            <h1>{totalPrice()}</h1>
+            <h1 style={{ color: "green" }}>{totalPrice()}</h1>
 
             {auth?.user?.address ? (
               <p>{auth.user.address}</p>
@@ -152,14 +191,24 @@ const CartPage = () => {
                 />
 
                 <button
-                  className="pay"
                   onClick={handlePayment}
                   disabled={!instance || loading}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    background: "#28a745",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    marginTop: "10px",
+                    cursor: "pointer"
+                  }}
                 >
                   {loading ? "Processing..." : "Pay Now"}
                 </button>
               </>
             )}
+
           </div>
 
         </div>
@@ -170,4 +219,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage; 
+export default CartPage;

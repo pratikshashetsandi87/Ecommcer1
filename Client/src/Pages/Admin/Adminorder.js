@@ -5,12 +5,11 @@ import moment from "moment";
 import { Select } from "antd";
 import Layout from "../../Layout/Layout";
 import { useAuth } from "../../Context/auth";
-import '../../Style/Adminorder.css';
 
 const { Option } = Select;
 
 const AdminOrders = () => {
-  const [status, setStatus] = useState([
+  const [status] = useState([
     "Not Process",
     "Processing",
     "Shipped",
@@ -21,10 +20,10 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const { auth } = useAuth();
 
+  // ================= GET ORDERS =================
   const getOrders = async () => {
     try {
-      const response = await axios.get(
-        // ✅ FIXED URL
+      const { data } = await axios.get(
         "https://watchecom-backend.onrender.com/api/auth/all-orders",
         {
           headers: {
@@ -33,27 +32,21 @@ const AdminOrders = () => {
         }
       );
 
-      if (Array.isArray(response.data.orders)) {
-        setOrders(response.data.orders);
-      } else {
-        setOrders([]);
-      }
+      setOrders(data?.orders || []);
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      console.log(error);
       setOrders([]);
     }
   };
 
   useEffect(() => {
-    if (auth?.token) {
-      getOrders();
-    }
+    if (auth?.token) getOrders();
   }, [auth?.token]);
 
+  // ================= UPDATE STATUS =================
   const handleChange = async (orderId, value) => {
     try {
-      const response = await axios.put(
-        // ✅ FIXED URL
+      const { data } = await axios.put(
         `https://watchecom-backend.onrender.com/api/auth/order-status/${orderId}`,
         { status: value },
         {
@@ -63,33 +56,52 @@ const AdminOrders = () => {
         }
       );
 
-      if (response.data.success) {
-        getOrders();
-      }
+      if (data.success) getOrders();
     } catch (error) {
-      console.error("Error updating order:", error);
+      console.log(error);
     }
   };
 
   return (
-    <Layout title={"All Orders Data"}>
-      <div className="orders-container">
-        <div className="row dashboard">
+    <Layout title={"All Orders"}>
+      <div style={{
+        padding: "20px",
+        background: "#f5f7fa",
+        minHeight: "100vh"
+      }}>
 
+        <div className="row">
+
+          {/* SIDEBAR */}
           <div className="col-md-3">
             <AdminMenu />
           </div>
 
+          {/* MAIN */}
           <div className="col-md-9">
-            <h1 className="text-center">All Orders</h1>
+
+            <h2 style={{
+              textAlign: "center",
+              marginBottom: "20px",
+              fontWeight: "600"
+            }}>
+              All Orders
+            </h2>
 
             {orders.length === 0 ? (
-              <p>No orders found</p>
+              <p style={{ textAlign: "center" }}>No Orders Found</p>
             ) : (
               orders.map((o, i) => (
-                <div key={o._id}>
+                <div key={o._id} style={{
+                  background: "#fff",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  marginBottom: "20px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+                }}>
 
-                  <table className="orders-table table">
+                  {/* TABLE */}
+                  <table className="table">
                     <thead>
                       <tr>
                         <th>#</th>
@@ -97,7 +109,7 @@ const AdminOrders = () => {
                         <th>Buyer</th>
                         <th>Date</th>
                         <th>Payment</th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                       </tr>
                     </thead>
 
@@ -108,8 +120,8 @@ const AdminOrders = () => {
                         <td>
                           <Select
                             bordered={false}
-                            onChange={(value) => handleChange(o._id, value)}
                             defaultValue={o.status}
+                            onChange={(value) => handleChange(o._id, value)}
                           >
                             {status.map((s, index) => (
                               <Option key={index} value={s}>
@@ -119,28 +131,50 @@ const AdminOrders = () => {
                           </Select>
                         </td>
 
-                        <td>{o.buyer?.name || "No Buyer"}</td>
-                        <td>{moment(o.createdAt).fromNow()}</td>
-                        <td>{o.payment?.success ? "Success" : "Failed"}</td>
-                        <td>{o.products?.length || 0}</td>
+                        <td>{o?.buyer?.name}</td>
+                        <td>{moment(o?.createdAt).fromNow()}</td>
+                        <td>
+                          {o?.payment?.success ? "Success" : "Failed"}
+                        </td>
+                        <td>{o?.products?.length}</td>
                       </tr>
                     </tbody>
                   </table>
 
-                  <div className="order-details">
-                    {o.products?.map((p) => (
-                      <div className="details-content" key={p._id}>
+                  {/* PRODUCTS */}
+                  <div>
+                    {o?.products?.map((p) => (
+                      <div key={p._id} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "15px",
+                        background: "#f9f9f9",
+                        padding: "10px",
+                        borderRadius: "10px",
+                        marginBottom: "10px"
+                      }}>
 
-                        {/* ✅ FIXED IMAGE URL */}
+                        {/* ✅ FIXED IMAGE */}
                         <img
-                          src={`https://watchecom-backend.onrender.com/api/auth/product/getproduct-photo/${p._id}`}
+                          src={`https://watchecom-backend.onrender.com/api/product/getproduct-photo/${p._id}`}
                           alt={p.name}
+                          onError={(e) => (e.target.src = "/placeholder-image.jpg")}
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "contain",
+                            borderRadius: "8px",
+                            background: "#fff"
+                          }}
                         />
 
+                        {/* DETAILS */}
                         <div>
-                          <p><strong>Name:</strong> {p.name}</p>
-                          <p><strong>Description:</strong> {p.description?.substring(0, 30)}</p>
-                          <p><strong>Price:</strong> ₹ {p.price}</p>
+                          <p><strong>{p.name}</strong></p>
+                          <p style={{ fontSize: "13px", color: "#666" }}>
+                            {p.description?.substring(0, 30)}...
+                          </p>
+                          <p style={{ color: "green" }}>₹ {p.price}</p>
                         </div>
 
                       </div>
@@ -153,6 +187,7 @@ const AdminOrders = () => {
 
           </div>
         </div>
+
       </div>
     </Layout>
   );

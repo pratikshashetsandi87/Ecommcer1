@@ -1,13 +1,15 @@
-# TODO: Fix Home.js "No token found" error
+# TODO: Fix 401 Error on Create Category (Updated Plan)
 
-**Approved Plan Steps:**
-1. [x] Create TODO.md with steps 
-2. [x] Update src/Pages/Home.js:
-   - Add import { useAuth } from "../Context/auth";
-   - Add const { auth } = useAuth(); near other hooks.
-   - Modify useEffect(() => { if(auth?.token){ getAllCategory(); } getTotal(); getAllProducts(); }, [auth?.token]);
-3. [x] Verify changes applied (Home.js updated successfully)
-4. [x] Task complete
+## Steps from Analysis:
+- [x] Analyzed frontend/backend files: Confirmed backend uses `/api/auth/category/create-category`
+- [x] Frontend api.js calls `/category/create-category` → resolves to `/api/category/create-category` (❌ **Wrong path!**)
+- [x] Login.js hardcoded URL gets 404 (path correct, likely Render sleep)
 
-**Progress:** Starting edits...
+## Implementation Steps:
+- [ ] 1. Fix api.js: Update category endpoints to `/auth/category/create-category`
+- [ ] 2. Update Login.js to use api instance (consistent token handling)
+- [ ] 3. Update TODO after fixes
+- [ ] 4. Test: npm start, login as admin, create category
+- [ ] 5. Backend local run if needed: `cd ../Server && npm i && npm start`
 
+**Next**: Edit src/api.js category calls + Login.js

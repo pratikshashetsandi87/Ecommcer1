@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api'; // ✅ FIX
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,10 +27,7 @@ const Login = () => {
     setError('');
 
     try {
-      const { data } = await axios.post(
-        "https://watchecom-backend.onrender.com/api/auth/login",
-        formData
-      );
+      const { data } = await api.post("/auth/login", formData); // ✅ FIX
 
       if (data?.success) {
         const authData = {
@@ -54,8 +51,14 @@ const Login = () => {
 
     } catch (error) {
       console.log(error);
-      setError(error.response?.data?.message || "Login Failed");
-      toast.error("Login Failed");
+
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Login Failed";
+
+      setError(message);
+      toast.error(message);
     }
   };
 

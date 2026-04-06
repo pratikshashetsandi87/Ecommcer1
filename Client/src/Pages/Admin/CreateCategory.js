@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import api from '../../../api.js';
+import api from "../../api"; // ✅ use api.js
 import Layout from '../../Layout/Layout';
 import AdminMenu from '../../Layout/AdminMenu';
 import CategoryForm from '../../component/Form/CategoryForm';
@@ -14,45 +14,29 @@ function CreateCategory() {
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
 
+  // ✅ CREATE
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = JSON.parse(localStorage.getItem('auth'))?.token;
-      if (!token) throw new Error('No token found');
-
-      const response = await api.post(
-        '/category/create-category',
-        { name },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      const { data } = response;
+      const { data } = await api.post("/category/create-category", { name });
 
       if (data.success) {
-        toast.success("Category created successfully");
+        toast.success("Category created");
         setName('');
         getAllCategory();
-      } else {
-        toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to create category');
+      toast.error("Create failed");
     }
   };
 
+  // ✅ GET
   const getAllCategory = async () => {
     try {
-      const token = JSON.parse(localStorage.getItem('auth'))?.token;
-      if (!token) throw new Error('No token found');
-
-      const { data } = await api.get(
-        '/category/getall-category',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { data } = await api.get("/category/getall-category");
 
       if (data.success) {
-        // ✅ FIXED FIELD
         setCategories(data?.categories || []);
       }
     } catch (error) {
@@ -64,15 +48,13 @@ function CreateCategory() {
     getAllCategory();
   }, []);
 
+  // ✅ UPDATE
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const token = JSON.parse(localStorage.getItem('auth'))?.token;
-
       const { data } = await api.put(
         `/category/update-category/${selected._id}`,
-        { name: updatedName },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { name: updatedName }
       );
 
       if (data.success) {
@@ -86,14 +68,10 @@ function CreateCategory() {
     }
   };
 
+  // ✅ DELETE
   const handleDelete = async (id) => {
     try {
-      const token = JSON.parse(localStorage.getItem('auth'))?.token;
-
-      const { data } = await api.delete(
-        `/category/delete-category/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { data } = await api.delete(`/category/delete-category/${id}`);
 
       if (data.success) {
         toast.success("Deleted");

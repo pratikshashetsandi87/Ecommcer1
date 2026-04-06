@@ -3,7 +3,7 @@ import Layout from '../../Layout/Layout';
 import AdminMenu from '../../Layout/AdminMenu';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import api from '../../api.js';
+import api from '../../api'; // ✅ use api.js
 import { Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import slugify from 'slugify';
@@ -25,18 +25,7 @@ function CreateProduct() {
   // ================= GET CATEGORY =================
   const getAllCategory = async () => {
     try {
-      const auth = JSON.parse(localStorage.getItem('auth'));
-      const token = auth?.token;
-
-      const { data } = await axios.get(
-        // ✅ FIXED URL
-        'https://watchecom-backend.onrender.com/api/auth/category/getall-category',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await api.get("/category/getall-category");
 
       if (data.success) {
         setCategories(data?.categories || []);
@@ -55,10 +44,12 @@ function CreateProduct() {
   const handleCreate = async (e) => {
     e.preventDefault();
 
-    try {
-      const auth = JSON.parse(localStorage.getItem('auth'));
-      const token = auth?.token;
+    // ✅ VALIDATION
+    if (!category) {
+      return toast.error("Please select category");
+    }
 
+    try {
       const productData = new FormData();
 
       productData.append('name', name);
@@ -75,13 +66,11 @@ function CreateProduct() {
       const slug = slugify(name, { lower: true });
       productData.append('slug', slug);
 
-      const { data } = await axios.post(
-        // ✅ FIXED URL
-        'https://watchecom-backend.onrender.com/api/auth/product/create-product',
+      const { data } = await api.post(
+        "/product/create-product",
         productData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         }
@@ -89,16 +78,14 @@ function CreateProduct() {
 
       if (data.success) {
         toast.success('Product Created Successfully');
-
-        setTimeout(() => {
-          navigate('/products');
-        }, 800);
+        setTimeout(() => navigate('/products'), 800);
       } else {
         toast.error(data.message);
       }
+
     } catch (error) {
       console.log(error);
-      toast.error(error.response?.data?.message || 'Something went wrong');
+      toast.error('Something went wrong');
     }
   };
 
@@ -176,14 +163,15 @@ function CreateProduct() {
               onChange={(e) => setQuantity(e.target.value)}
             />
 
+            {/* ✅ FIXED SHIPPING */}
             <Select
               placeholder="Select Shipping"
               size="large"
               className="form-select mb-3"
               onChange={(value) => setShipping(value)}
             >
-              <Option value="0">No</Option>
-              <Option value="1">Yes</Option>
+              <Option value={false}>No</Option>
+              <Option value={true}>Yes</Option>
             </Select>
 
             <button className="btn btn-primary" onClick={handleCreate}>

@@ -3,8 +3,8 @@ import UserMenu from "../Layout/UserMenus";
 import Layout from "../Layout/Layout";
 import { useAuth } from "../Context/auth";
 import moment from "moment";
-import axios from "axios";
-import "../Style/order.css"; // Import scoped CSS
+import api from "../api"; // ✅ FIX
+import "../Style/order.css";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,9 +12,8 @@ const Orders = () => {
 
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("https://watchecom-gw0t.onrender.com/api/auth/orders", {
-        headers: { Authorization: `Bearer ${auth?.token}` }
-      });
+      const { data } = await api.get("/auth/orders"); // ✅ FIX
+
       console.log("Orders fetched:", data);
       setOrders(Array.isArray(data.orders) ? data.orders : []);
     } catch (error) {
@@ -35,26 +34,30 @@ const Orders = () => {
           <div className="col-md-3">
             <UserMenu />
           </div>
+
           <div className="col-md-9">
             <h1 className="text-center">All Orders</h1>
+
             {Array.isArray(orders) && orders.length > 0 ? (
               orders.map((o, i) => (
                 <div className="order-card border shadow" key={o._id}>
+                  
                   <table className="table orders-table">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Buyer</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Payment</th>
-                        <th scope="col">Quantity</th>
+                        <th>#</th>
+                        <th>Status</th>
+                        <th>Buyer</th>
+                        <th>Date</th>
+                        <th>Payment</th>
+                        <th>Quantity</th>
                       </tr>
                     </thead>
+
                     <tbody>
                       <tr>
                         <td>{i + 1}</td>
-                        <td>{o?.status || "Unknown"}</td> {/* Display the order status */}
+                        <td>{o?.status || "Unknown"}</td>
                         <td>{o?.buyer?.name || "Unknown"}</td>
                         <td>{moment(o?.createdAt).fromNow()}</td>
                         <td>{o?.payment?.success ? "Success" : "Failed"}</td>
@@ -62,26 +65,33 @@ const Orders = () => {
                       </tr>
                     </tbody>
                   </table>
+
                   <div className="container">
                     {o?.products?.map((p) => (
                       <div className="order-card d-flex flex-row mb-2 p-3" key={p._id}>
+                        
+                        {/* ✅ FIXED IMAGE */}
                         <img
-                          src={`https://watchecom-gw0t.onrender.com/api/auth/product/getproduct-photo/${p._id}`}
+                          src={`https://watchecom-backend.onrender.com/api/product/getproduct-photo/${p._id}`}
                           alt={p.name}
                         />
+
                         <div className="card-body">
                           <p>{p.name}</p>
                           <p>{p.description.substring(0, 30)}...</p>
                           <p>Price: {p.price}</p>
                         </div>
+
                       </div>
                     ))}
                   </div>
+
                 </div>
               ))
             ) : (
               <p>No orders found</p>
             )}
+
           </div>
         </div>
       </div>

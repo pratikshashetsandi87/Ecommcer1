@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../api.js";
 
 export default function useCategory() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(null); // ✅ important
 
   const getCategories = async () => {
     try {
@@ -10,11 +10,15 @@ export default function useCategory() {
 
       console.log("Fetched categories:", data);
 
-      // ✅ FIXED: Handle both 'categories' and 'category'
-      setCategories(data?.categories || data?.category || []);
+      if (data?.success) {
+        setCategories(data.categories || []);
+      } else {
+        setCategories([]);
+      }
 
     } catch (error) {
-      console.log(error);
+      console.log("Category Error:", error);
+      setCategories([]); // fallback
     }
   };
 

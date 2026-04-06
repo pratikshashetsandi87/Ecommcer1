@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://watchecom-backend.onrender.com/api/auth';
+const API_BASE_URL = 'https://watchecom-backend.onrender.com/api'; // ✅ FIX
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,7 +9,7 @@ const api = axios.create({
   },
 });
 
-// ✅ AUTO TOKEN (MAIN FIX)
+// ✅ AUTO TOKEN
 api.interceptors.request.use(
   (config) => {
     const auth = JSON.parse(localStorage.getItem("auth"));
@@ -20,14 +20,5 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
-// OPTIONAL (manual set)
-export const setAuthToken = (token) => {
-  if (token) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common['Authorization'];
-  }
-};
 
 export default api;
