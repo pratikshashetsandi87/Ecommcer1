@@ -38,8 +38,8 @@ mongoose
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/auth/category", CategoryRouter);
-app.use("/api/auth/product", ProductRoutes);
+app.use("/api/category", CategoryRouter);
+app.use("/api/product", ProductRoutes);
 
 // Test route
 app.get("/", (req, res) => {
