@@ -21,7 +21,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "https://watchecom-frontend2.onrender.com",
-      "https://your-vercel-app.vercel.app" // ✅ ADD THIS
+      "https://watchecom-frontend1.vercel.app" // ✅ REAL URL टाक
     ],
     credentials: true,
   })
