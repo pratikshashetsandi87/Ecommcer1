@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../api.js";
+import api from "../api"; // ✅ FIX
 import { Checkbox, Radio, Input } from "antd";
 import { Prices } from "../Context/Prices";
 import Layout from "../Layout/Layout";
