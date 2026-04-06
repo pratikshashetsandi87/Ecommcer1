@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import api from "../api.js";
+import api from "../api";
 
 export default function useCategory() {
-  const [categories, setCategories] = useState(null); // ✅ important
+  const [categories, setCategories] = useState(null);
 
   const getCategories = async () => {
     try {
@@ -18,7 +18,7 @@ export default function useCategory() {
 
     } catch (error) {
       console.log("Category Error:", error);
-      setCategories([]); // fallback
+      setCategories([]);
     }
   };
 
