@@ -14,13 +14,13 @@ dotenv.config();
 // App
 const app = express();
 
-// ================= CORS FIX (FINAL) =================
+// ================= CORS FIX =================
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://watchecom-frontend1.onrender.com", // ✅ IMPORTANT
+  "https://watchecom-frontend1.onrender.com",
   "https://watchecom-frontend2.onrender.com",
-  "https://watchecom-frontend1.vercel.app"
+  "https://watchecom-frontend1.vercel.app",
 ];
 
 app.use(
@@ -38,11 +38,12 @@ app.use(
   })
 );
 
-// ✅ PREFLIGHT FIX (VERY IMPORTANT)
+// ✅ PREFLIGHT FIX
 app.options("*", cors());
 
-// Middlewares
-app.use(express.json());
+// ================= BODY LIMIT FIX (413 ERROR FIX) =================
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ limit: "20mb", extended: true }));
 
 // ================= DB =================
 mongoose
