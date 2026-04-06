@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../../Layout/Layout";
 import AdminMenu from "../../Layout/AdminMenu";
-import api from "../../api.js";
+import api from "../../api"; // ✅ FIX
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 
