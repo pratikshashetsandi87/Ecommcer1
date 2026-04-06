@@ -20,8 +20,9 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
+      "https://watchecom-frontend1.onrender.com", // ✅ ADD THIS
       "https://watchecom-frontend2.onrender.com",
-      "https://watchecom-frontend1.vercel.app" // ✅ REAL URL टाक
+      "https://watchecom-frontend1.vercel.app"
     ],
     credentials: true,
   })
