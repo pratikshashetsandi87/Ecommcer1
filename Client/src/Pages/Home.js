@@ -93,15 +93,15 @@ const HomePage = () => {
     <Layout title="All Products">
 
       {/* BANNER */}
-     <img
+   <img
   src="https://github.com/techinfo-youtube/ecommerce-app-2023/blob/15-admin-orders-css/client/public/images/banner.png?raw=true"
   alt="banner"
   style={{
     width: "100%",
-    height: "220px", // ✅ fixed height
-    objectFit: "cover", // ✅ no stretch
-    marginTop: "70px", // ✅ navbar gap fix
-    borderRadius: "10px",
+    height: "180px", // 👈 reduce height
+    objectFit: "cover",
+    marginTop: "60px", // 👈 perfect navbar gap
+    marginBottom: "10px",
   }}
 />
 
