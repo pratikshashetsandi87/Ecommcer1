@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { useAuth } from '../Context/auth';
@@ -11,9 +11,6 @@ const Header = () => {
   const { cart } = useCart();
   const categories = useCategory();
   const navigate = useNavigate();
-
-  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
-  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('auth');
@@ -30,145 +27,65 @@ const Header = () => {
         width: "100%",
         background: "#fff",
         zIndex: 1000,
-        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        padding: "10px"
       }}
     >
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "10px 15px",
-          flexWrap: "wrap"
+          flexWrap: "wrap", // ✅ mobile wrap
+          gap: "10px",
+          alignItems: "center"
         }}
       >
 
         {/* LOGO */}
-        <Link to="/" style={{ fontWeight: "bold", fontSize: "18px" }}>
-          🛒 Ecommerce App
+        <Link to="/" style={{ fontWeight: "bold" }}>
+          🛒 Ecommerce
         </Link>
 
-        {/* MENU */}
-        <ul
-          style={{
-            display: "flex",
-            listStyle: "none",
-            gap: "15px",
-            margin: 0,
-            padding: 0,
-            flexWrap: "wrap"
-          }}
-        >
+        {/* MAIN LINKS */}
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/categories">Categories</NavLink>
 
-          <li>
-            <NavLink to="/" style={{ textDecoration: "none" }}>
-              Home
+        {/* SHOW ALL CATEGORIES DIRECT */}
+        {Array.isArray(categories) &&
+          categories.map((c) => (
+            <NavLink key={c._id} to={`/category/${c.slug}`}>
+              {c.name}
             </NavLink>
-          </li>
+          ))}
 
-          {/* Categories */}
-          <li style={{ position: "relative" }}>
+        {/* CART */}
+        <Badge count={cart.length} showZero>
+          <NavLink to="/cart">Cart</NavLink>
+        </Badge>
+
+        {/* AUTH */}
+        {!auth?.user ? (
+          <>
+            <NavLink to="/register">Register</NavLink>
+            <NavLink to="/login">Login</NavLink>
+          </>
+        ) : (
+          <>
+            <NavLink to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}>
+              Dashboard
+            </NavLink>
+
             <button
-              onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+              onClick={handleLogout}
               style={{
                 border: "none",
                 background: "none",
+                color: "red",
                 cursor: "pointer"
               }}
             >
-              Categories ⬇
+              Logout
             </button>
-
-            {categoryDropdownOpen && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "30px",
-                  background: "#fff",
-                  padding: "10px",
-                  boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
-                }}
-              >
-                <Link to="/categories">All Categories</Link>
-
-                {Array.isArray(categories) &&
-                  categories.map((c) => (
-                    <div key={c._id}>
-                      <Link to={`/category/${c.slug}`}>
-                        {c.name}
-                      </Link>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </li>
-
-          {/* Cart */}
-          <li>
-            <Badge count={cart.length} showZero>
-              <NavLink to="/cart" style={{ textDecoration: "none" }}>
-                Cart
-              </NavLink>
-            </Badge>
-          </li>
-
-          {/* Auth */}
-          {!auth?.user ? (
-            <>
-              <li>
-                <NavLink to="/register">Register</NavLink>
-              </li>
-              <li>
-                <NavLink to="/login">Login</NavLink>
-              </li>
-            </>
-          ) : (
-            <li style={{ position: "relative" }}>
-              <button
-                onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
-                style={{
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer"
-                }}
-              >
-                {auth.user.name} ⬇
-              </button>
-
-              {adminDropdownOpen && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "30px",
-                    background: "#fff",
-                    padding: "10px",
-                    boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
-                  }}
-                >
-                  <NavLink
-                    to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
-                  >
-                    Dashboard
-                  </NavLink>
-
-                  <br />
-
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      border: "none",
-                      background: "none",
-                      color: "red",
-                      cursor: "pointer"
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </li>
-          )}
-        </ul>
+          </>
+        )}
 
       </div>
     </nav>
