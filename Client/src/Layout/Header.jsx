@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { useAuth } from '../Context/auth';
 import useCategory from '../Hook/UseCategory';
 import { useCart } from '../Context/Cart';
 import { Badge } from 'antd';
+import '../Style/Header.css';
 
 const Header = () => {
   const { auth, setAuth } = useAuth();
@@ -12,10 +13,13 @@ const Header = () => {
   const categories = useCategory();
   const navigate = useNavigate();
 
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+
   const handleLogout = () => {
     localStorage.removeItem('auth');
     setAuth({ user: null, token: "" });
-    toast.success("Logged out successfully!");
+    toast.success("Logged out successfully!", { position: "top-center" });
     navigate('/login');
   };
 
@@ -28,59 +32,66 @@ const Header = () => {
           🛒 Ecommerce App
         </Link>
 
-        {/* 🔥 MOBILE TOGGLE BUTTON */}
+        {/* 🔥 MOBILE BUTTON (ONLY ADD THIS) */}
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
+          data-bs-target="#navbarTogglerDemo01"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* MENU */}
-        <div className="collapse navbar-collapse" id="navbarContent">
-
+        {/* MENU (UNCHANGED) */}
+        <div
+          className={`collapse navbar-collapse ${
+            categoryDropdownOpen || adminDropdownOpen ? 'show' : ''
+          }`}
+          id="navbarTogglerDemo01"
+        >
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-
+            
             <li className="nav-item">
               <NavLink to="/" className="nav-link">Home</NavLink>
             </li>
 
             {/* Categories */}
             <li className="nav-item dropdown">
-              <span
+              <button
                 className="nav-link dropdown-toggle"
-                role="button"
-                data-bs-toggle="dropdown"
+                type="button"
+                onClick={() => setCategoryDropdownOpen(prev => !prev)}
               >
                 Categories
-              </span>
+              </button>
 
-              <ul className="dropdown-menu">
+              <ul className={`dropdown-menu ${categoryDropdownOpen ? 'show' : ''}`}>
                 <li>
                   <Link className="dropdown-item" to="/categories">
                     All Categories
                   </Link>
                 </li>
 
-                {Array.isArray(categories) &&
-                  categories.map((c) => (
-                    <li key={c._id}>
+                {Array.isArray(categories) && categories.length > 0 ? (
+                  categories.map(category => (
+                    <li key={category._id}>
                       <Link
                         className="dropdown-item"
-                        to={`/category/${c.slug}`}
+                        to={`/category/${category.slug}`}
                       >
-                        {c.name}
+                        {category.name}
                       </Link>
                     </li>
-                  ))}
+                  ))
+                ) : (
+                  <li className="dropdown-item">No categories available</li>
+                )}
               </ul>
             </li>
 
             {/* Cart */}
             <li className="nav-item">
-              <Badge count={cart.length} showZero>
+              <Badge count={cart.length} showZero offset={[10, -5]}>
                 <NavLink to="/cart" className="nav-link">Cart</NavLink>
               </Badge>
             </li>
@@ -97,15 +108,15 @@ const Header = () => {
               </>
             ) : (
               <li className="nav-item dropdown">
-                <span
+                <button
                   className="nav-link dropdown-toggle"
-                  role="button"
-                  data-bs-toggle="dropdown"
+                  type="button"
+                  onClick={() => setAdminDropdownOpen(prev => !prev)}
                 >
-                  {auth.user.name}
-                </span>
+                  {auth?.user?.name}
+                </button>
 
-                <ul className="dropdown-menu">
+                <ul className={`dropdown-menu ${adminDropdownOpen ? 'show' : ''}`}>
                   <li>
                     <NavLink
                       to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
