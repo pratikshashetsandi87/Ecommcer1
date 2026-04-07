@@ -100,8 +100,8 @@ const HomePage = () => {
     width: "100%",
     height: "180px", // 👈 reduce height
     objectFit: "cover",
-    marginTop: "60px", // 👈 perfect navbar gap
-    marginBottom: "10px",
+    marginTop: "100px", // 👈 perfect navbar gap
+    marginBottom: "80px",
   }}
 />
 
