@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <nav className="navbar bg-body-tertiary fixed-top">
       <div className="container-fluid">
 
         {/* LOGO */}
@@ -32,24 +32,14 @@ const Header = () => {
           🛒 Ecommerce App
         </Link>
 
-        {/* 🔥 MOBILE BUTTON (ONLY ADD THIS) */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarTogglerDemo01"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        {/* ✅ ALWAYS VISIBLE MENU */}
+        <div className="navbar-collapse">
 
-        {/* MENU (UNCHANGED) */}
-        <div
-          className={`collapse navbar-collapse ${
-            categoryDropdownOpen || adminDropdownOpen ? 'show' : ''
-          }`}
-          id="navbarTogglerDemo01"
-        >
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0" style={{
+            display: "flex",
+            flexWrap: "wrap",   // ✅ mobile wrap
+            gap: "10px"
+          }}>
             
             <li className="nav-item">
               <NavLink to="/" className="nav-link">Home</NavLink>
