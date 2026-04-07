@@ -20,73 +20,114 @@ const Header = () => {
   };
 
   return (
-    <nav
-      style={{
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        background: "#fff",
-        zIndex: 1000,
-        padding: "10px"
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap", // ✅ mobile wrap
-          gap: "10px",
-          alignItems: "center"
-        }}
-      >
+    <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+      <div className="container-fluid">
 
         {/* LOGO */}
-        <Link to="/" style={{ fontWeight: "bold" }}>
-          🛒 Ecommerce
+        <Link to="/" className="navbar-brand">
+          🛒 Ecommerce App
         </Link>
 
-        {/* MAIN LINKS */}
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/categories">Categories</NavLink>
+        {/* 🔥 MOBILE TOGGLE BUTTON */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-        {/* SHOW ALL CATEGORIES DIRECT */}
-        {Array.isArray(categories) &&
-          categories.map((c) => (
-            <NavLink key={c._id} to={`/category/${c.slug}`}>
-              {c.name}
-            </NavLink>
-          ))}
+        {/* MENU */}
+        <div className="collapse navbar-collapse" id="navbarContent">
 
-        {/* CART */}
-        <Badge count={cart.length} showZero>
-          <NavLink to="/cart">Cart</NavLink>
-        </Badge>
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
 
-        {/* AUTH */}
-        {!auth?.user ? (
-          <>
-            <NavLink to="/register">Register</NavLink>
-            <NavLink to="/login">Login</NavLink>
-          </>
-        ) : (
-          <>
-            <NavLink to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}>
-              Dashboard
-            </NavLink>
+            <li className="nav-item">
+              <NavLink to="/" className="nav-link">Home</NavLink>
+            </li>
 
-            <button
-              onClick={handleLogout}
-              style={{
-                border: "none",
-                background: "none",
-                color: "red",
-                cursor: "pointer"
-              }}
-            >
-              Logout
-            </button>
-          </>
-        )}
+            {/* Categories */}
+            <li className="nav-item dropdown">
+              <span
+                className="nav-link dropdown-toggle"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                Categories
+              </span>
 
+              <ul className="dropdown-menu">
+                <li>
+                  <Link className="dropdown-item" to="/categories">
+                    All Categories
+                  </Link>
+                </li>
+
+                {Array.isArray(categories) &&
+                  categories.map((c) => (
+                    <li key={c._id}>
+                      <Link
+                        className="dropdown-item"
+                        to={`/category/${c.slug}`}
+                      >
+                        {c.name}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </li>
+
+            {/* Cart */}
+            <li className="nav-item">
+              <Badge count={cart.length} showZero>
+                <NavLink to="/cart" className="nav-link">Cart</NavLink>
+              </Badge>
+            </li>
+
+            {/* Auth */}
+            {!auth?.user ? (
+              <>
+                <li className="nav-item">
+                  <NavLink to="/register" className="nav-link">Register</NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/login" className="nav-link">Login</NavLink>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item dropdown">
+                <span
+                  className="nav-link dropdown-toggle"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                >
+                  {auth.user.name}
+                </span>
+
+                <ul className="dropdown-menu">
+                  <li>
+                    <NavLink
+                      to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
+                      className="dropdown-item"
+                    >
+                      Dashboard
+                    </NavLink>
+                  </li>
+
+                  <li><hr className="dropdown-divider" /></li>
+
+                  <li>
+                    <button onClick={handleLogout} className="dropdown-item">
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </li>
+            )}
+
+          </ul>
+        </div>
       </div>
     </nav>
   );
