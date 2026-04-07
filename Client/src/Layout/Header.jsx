@@ -14,7 +14,6 @@ const Header = () => {
 
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // ✅ mobile menu
 
   const handleLogout = () => {
     localStorage.removeItem('auth');
@@ -40,60 +39,64 @@ const Header = () => {
           justifyContent: "space-between",
           alignItems: "center",
           padding: "10px 15px",
+          flexWrap: "wrap"
         }}
       >
+
         {/* LOGO */}
         <Link to="/" style={{ fontWeight: "bold", fontSize: "18px" }}>
           🛒 Ecommerce App
         </Link>
 
-        {/* MOBILE MENU BUTTON */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
+        {/* MENU */}
+        <ul
           style={{
-            display: "block",
-            border: "none",
-            background: "transparent",
-            fontSize: "20px",
+            display: "flex",
+            listStyle: "none",
+            gap: "15px",
+            margin: 0,
+            padding: 0,
+            flexWrap: "wrap"
           }}
         >
-          ☰
-        </button>
-      </div>
-
-      {/* MENU */}
-      <div
-        style={{
-          display: menuOpen ? "block" : "none",
-          background: "#fff",
-          padding: "10px",
-        }}
-      >
-        <ul style={{ listStyle: "none", padding: 0 }}>
 
           <li>
-            <NavLink to="/" style={{ display: "block", padding: "8px" }}>
+            <NavLink to="/" style={{ textDecoration: "none" }}>
               Home
             </NavLink>
           </li>
 
           {/* Categories */}
-          <li>
+          <li style={{ position: "relative" }}>
             <button
               onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
-              style={{ border: "none", background: "none", padding: "8px" }}
+              style={{
+                border: "none",
+                background: "none",
+                cursor: "pointer"
+              }}
             >
               Categories ⬇
             </button>
 
             {categoryDropdownOpen && (
-              <div style={{ paddingLeft: "10px" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "30px",
+                  background: "#fff",
+                  padding: "10px",
+                  boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
+                }}
+              >
                 <Link to="/categories">All Categories</Link>
 
                 {Array.isArray(categories) &&
                   categories.map((c) => (
                     <div key={c._id}>
-                      <Link to={`/category/${c.slug}`}>{c.name}</Link>
+                      <Link to={`/category/${c.slug}`}>
+                        {c.name}
+                      </Link>
                     </div>
                   ))}
               </div>
@@ -102,57 +105,71 @@ const Header = () => {
 
           {/* Cart */}
           <li>
-            <NavLink to="/cart" style={{ padding: "8px", display: "block" }}>
-              Cart ({cart.length})
-            </NavLink>
+            <Badge count={cart.length} showZero>
+              <NavLink to="/cart" style={{ textDecoration: "none" }}>
+                Cart
+              </NavLink>
+            </Badge>
           </li>
 
           {/* Auth */}
           {!auth?.user ? (
             <>
               <li>
-                <NavLink to="/register" style={{ padding: "8px", display: "block" }}>
-                  Register
-                </NavLink>
+                <NavLink to="/register">Register</NavLink>
               </li>
               <li>
-                <NavLink to="/login" style={{ padding: "8px", display: "block" }}>
-                  Login
-                </NavLink>
+                <NavLink to="/login">Login</NavLink>
               </li>
             </>
           ) : (
-            <>
-              <li>
-                <button
-                  onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
-                  style={{ border: "none", background: "none", padding: "8px" }}
+            <li style={{ position: "relative" }}>
+              <button
+                onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
+                style={{
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer"
+                }}
+              >
+                {auth.user.name} ⬇
+              </button>
+
+              {adminDropdownOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "30px",
+                    background: "#fff",
+                    padding: "10px",
+                    boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
+                  }}
                 >
-                  {auth.user.name} ⬇
-                </button>
+                  <NavLink
+                    to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
+                  >
+                    Dashboard
+                  </NavLink>
 
-                {adminDropdownOpen && (
-                  <div style={{ paddingLeft: "10px" }}>
-                    <NavLink
-                      to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
-                    >
-                      Dashboard
-                    </NavLink>
+                  <br />
 
-                    <br />
-
-                    <button
-                      onClick={handleLogout}
-                      style={{ border: "none", background: "none", color: "red" }}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </li>
-            </>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "red",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </li>
           )}
         </ul>
+
       </div>
     </nav>
   );
