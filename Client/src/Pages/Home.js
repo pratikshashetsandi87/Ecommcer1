@@ -98,10 +98,10 @@ const HomePage = () => {
   alt="banner"
   style={{
     width: "100%",
-    height: "180px", // 👈 reduce height
+    height: "500px", // 👈 reduce height
     objectFit: "cover",
-    marginTop: "100px", // 👈 perfect navbar gap
-    marginBottom: "80px",
+    // marginTop: "1px", // 👈 perfect navbar gap
+    // marginBottom: "80px",
   }}
 />
 
