@@ -5,7 +5,6 @@ import { useAuth } from '../Context/auth';
 import useCategory from '../Hook/UseCategory';
 import { useCart } from '../Context/Cart';
 import { Badge } from 'antd';
-import '../Style/Header.css';
 
 const Header = () => {
   const { auth, setAuth } = useAuth();
@@ -15,6 +14,7 @@ const Header = () => {
 
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // ✅ mobile toggle
 
   const handleLogout = () => {
     localStorage.removeItem('auth');
@@ -24,112 +24,143 @@ const Header = () => {
   };
 
   return (
-    <nav className="navbar bg-body-tertiary fixed-top">
-      <div className="container-fluid">
+    <nav style={{
+      background: "#fff",
+      padding: "10px 20px",
+      position: "fixed",
+      width: "100%",
+      top: 0,
+      zIndex: 1000,
+      boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+    }}>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}>
 
-        {/* LOGO */}
-        <Link to="/" className="navbar-brand">
+        {/* Logo */}
+        <Link to="/" style={{ fontWeight: "bold", fontSize: "18px" }}>
           🛒 Ecommerce App
         </Link>
 
-        {/* ✅ ALWAYS VISIBLE MENU */}
-        <div className="navbar-collapse">
+        {/* ☰ Hamburger (mobile only) */}
+        <div
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            display: "none",
+            fontSize: "24px",
+            cursor: "pointer"
+          }}
+          className="hamburger"
+        >
+          ☰
+        </div>
 
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0" style={{
+        {/* Menu */}
+        <div
+          style={{
             display: "flex",
-            flexWrap: "wrap",   // ✅ mobile wrap
-            gap: "10px"
-          }}>
-            
-            <li className="nav-item">
-              <NavLink to="/" className="nav-link">Home</NavLink>
-            </li>
+            gap: "20px",
+            alignItems: "center"
+          }}
+          className={`menu ${menuOpen ? "show" : ""}`}
+        >
 
-            {/* Categories */}
-            <li className="nav-item dropdown">
-              <button
-                className="nav-link dropdown-toggle"
-                type="button"
-                onClick={() => setCategoryDropdownOpen(prev => !prev)}
-              >
-                Categories
-              </button>
+          <NavLink to="/">Home</NavLink>
 
-              <ul className={`dropdown-menu ${categoryDropdownOpen ? 'show' : ''}`}>
-                <li>
-                  <Link className="dropdown-item" to="/categories">
-                    All Categories
-                  </Link>
-                </li>
+          {/* Categories */}
+          <div style={{ position: "relative" }}>
+            <span
+              onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+              style={{ cursor: "pointer" }}
+            >
+              Categories ⬇
+            </span>
 
-                {Array.isArray(categories) && categories.length > 0 ? (
-                  categories.map(category => (
-                    <li key={category._id}>
-                      <Link
-                        className="dropdown-item"
-                        to={`/category/${category.slug}`}
-                      >
-                        {category.name}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="dropdown-item">No categories available</li>
-                )}
-              </ul>
-            </li>
+            {categoryDropdownOpen && (
+              <div style={{
+                position: "absolute",
+                top: "30px",
+                background: "#fff",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                padding: "10px"
+              }}>
+                <Link to="/categories">All</Link>
 
-            {/* Cart */}
-            <li className="nav-item">
-              <Badge count={cart.length} showZero offset={[10, -5]}>
-                <NavLink to="/cart" className="nav-link">Cart</NavLink>
-              </Badge>
-            </li>
-
-            {/* Auth */}
-            {!auth?.user ? (
-              <>
-                <li className="nav-item">
-                  <NavLink to="/register" className="nav-link">Register</NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink to="/login" className="nav-link">Login</NavLink>
-                </li>
-              </>
-            ) : (
-              <li className="nav-item dropdown">
-                <button
-                  className="nav-link dropdown-toggle"
-                  type="button"
-                  onClick={() => setAdminDropdownOpen(prev => !prev)}
-                >
-                  {auth?.user?.name}
-                </button>
-
-                <ul className={`dropdown-menu ${adminDropdownOpen ? 'show' : ''}`}>
-                  <li>
-                    <NavLink
-                      to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
-                      className="dropdown-item"
-                    >
-                      Dashboard
-                    </NavLink>
-                  </li>
-
-                  <li><hr className="dropdown-divider" /></li>
-
-                  <li>
-                    <button onClick={handleLogout} className="dropdown-item">
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </li>
+                {categories?.map(c => (
+                  <div key={c._id}>
+                    <Link to={`/category/${c.slug}`}>{c.name}</Link>
+                  </div>
+                ))}
+              </div>
             )}
+          </div>
 
-          </ul>
+          {/* Cart */}
+          <Badge count={cart.length}>
+            <NavLink to="/cart">Cart</NavLink>
+          </Badge>
+
+          {/* Auth */}
+          {!auth?.user ? (
+            <>
+              <NavLink to="/register">Register</NavLink>
+              <NavLink to="/login">Login</NavLink>
+            </>
+          ) : (
+            <div style={{ position: "relative" }}>
+              <span
+                onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
+                style={{ cursor: "pointer" }}
+              >
+                {auth?.user?.name} ⬇
+              </span>
+
+              {adminDropdownOpen && (
+                <div style={{
+                  position: "absolute",
+                  top: "30px",
+                  background: "#fff",
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                  padding: "10px"
+                }}>
+                  <NavLink to="/dashboard">Dashboard</NavLink>
+                  <br />
+                  <button onClick={handleLogout}>Logout</button>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
+
+      {/* ✅ MOBILE CSS */}
+      <style>
+        {`
+        @media (max-width: 768px) {
+          .hamburger {
+            display: block !important;
+          }
+
+          .menu {
+            display: none !important;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+          }
+
+          .menu.show {
+            display: flex !important;
+          }
+        }
+        `}
+      </style>
     </nav>
   );
 };
