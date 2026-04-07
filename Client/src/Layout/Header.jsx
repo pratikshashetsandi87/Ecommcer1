@@ -5,7 +5,6 @@ import { useAuth } from '../Context/auth';
 import useCategory from '../Hook/UseCategory';
 import { useCart } from '../Context/Cart';
 import { Badge } from 'antd';
-import '../Style/Header.css';
 
 const Header = () => {
   const { auth, setAuth } = useAuth();
@@ -15,132 +14,145 @@ const Header = () => {
 
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // ✅ mobile menu
 
   const handleLogout = () => {
     localStorage.removeItem('auth');
     setAuth({ user: null, token: "" });
-    toast.success("Logged out successfully!", { position: "top-center" });
+    toast.success("Logged out successfully!");
     navigate('/login');
   };
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-      <div className="container-fluid">
-        <div
-          className={`collapse navbar-collapse ${
-            categoryDropdownOpen || adminDropdownOpen ? 'show' : ''
-          }`}
-          id="navbarTogglerDemo01"
+    <nav
+      style={{
+        position: "fixed",
+        top: 0,
+        width: "100%",
+        background: "#fff",
+        zIndex: 1000,
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px 15px",
+        }}
+      >
+        {/* LOGO */}
+        <Link to="/" style={{ fontWeight: "bold", fontSize: "18px" }}>
+          🛒 Ecommerce App
+        </Link>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            display: "block",
+            border: "none",
+            background: "transparent",
+            fontSize: "20px",
+          }}
         >
-          <Link to="/" className="navbar-brand">
-            🛒 Ecommerce App
-          </Link>
+          ☰
+        </button>
+      </div>
 
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            
-            <li className="nav-item">
-              <NavLink to="/" className="nav-link">Home</NavLink>
-            </li>
+      {/* MENU */}
+      <div
+        style={{
+          display: menuOpen ? "block" : "none",
+          background: "#fff",
+          padding: "10px",
+        }}
+      >
+        <ul style={{ listStyle: "none", padding: 0 }}>
 
-            {/* Categories */}
-            <li className="nav-item dropdown">
-              <button
-                className="nav-link dropdown-toggle"
-                type="button"
-                id="navbarDropdownCategories"
-                onClick={() => setCategoryDropdownOpen(prev => !prev)}
-                aria-expanded={categoryDropdownOpen}
-              >
-                Categories
-              </button>
+          <li>
+            <NavLink to="/" style={{ display: "block", padding: "8px" }}>
+              Home
+            </NavLink>
+          </li>
 
-              <ul
-                className={`dropdown-menu ${categoryDropdownOpen ? 'show' : ''}`}
-                aria-labelledby="navbarDropdownCategories"
-              >
-                <li>
-                  <Link className="dropdown-item" to="/categories">
-                    All Categories
-                  </Link>
-                </li>
+          {/* Categories */}
+          <li>
+            <button
+              onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+              style={{ border: "none", background: "none", padding: "8px" }}
+            >
+              Categories ⬇
+            </button>
 
-                {Array.isArray(categories) && categories.length > 0 ? (
-                  categories.map(category => (
-                    <li key={category._id}>
-                      <Link
-                        className="dropdown-item"
-                        to={`/category/${category.slug}`}
-                      >
-                        {category.name}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="dropdown-item">No categories available</li>
-                )}
-              </ul>
-            </li>
+            {categoryDropdownOpen && (
+              <div style={{ paddingLeft: "10px" }}>
+                <Link to="/categories">All Categories</Link>
 
-            {/* Cart */}
-            <li className="nav-item">
-              <Badge count={cart.length} showZero offset={[10, -5]}>
-                <NavLink to="/cart" className="nav-link">Cart</NavLink>
-              </Badge>
-            </li>
+                {Array.isArray(categories) &&
+                  categories.map((c) => (
+                    <div key={c._id}>
+                      <Link to={`/category/${c.slug}`}>{c.name}</Link>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </li>
 
-            {/* Auth */}
-            {!auth?.user ? (
-              <>
-                <li className="nav-item">
-                  <NavLink to="/register" className="nav-link">Register</NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink to="/login" className="nav-link">Login</NavLink>
-                </li>
-              </>
-            ) : (
-              <li className="nav-item dropdown">
+          {/* Cart */}
+          <li>
+            <NavLink to="/cart" style={{ padding: "8px", display: "block" }}>
+              Cart ({cart.length})
+            </NavLink>
+          </li>
+
+          {/* Auth */}
+          {!auth?.user ? (
+            <>
+              <li>
+                <NavLink to="/register" style={{ padding: "8px", display: "block" }}>
+                  Register
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/login" style={{ padding: "8px", display: "block" }}>
+                  Login
+                </NavLink>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
                 <button
-                  className="nav-link dropdown-toggle"
-                  type="button"
-                  id="navbarDropdownUser"
-                  onClick={() => setAdminDropdownOpen(prev => !prev)}
-                  aria-expanded={adminDropdownOpen}
+                  onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
+                  style={{ border: "none", background: "none", padding: "8px" }}
                 >
-                  {auth?.user?.name}
+                  {auth.user.name} ⬇
                 </button>
 
-                <ul
-                  className={`dropdown-menu ${adminDropdownOpen ? 'show' : ''}`}
-                  aria-labelledby="navbarDropdownUser"
-                >
-                  <li>
+                {adminDropdownOpen && (
+                  <div style={{ paddingLeft: "10px" }}>
                     <NavLink
                       to={auth.user.role === "admin" ? "/admindashboard" : "/dashboard"}
-                      className="dropdown-item"
                     >
                       Dashboard
                     </NavLink>
-                  </li>
 
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
+                    <br />
 
-                  <li>
                     <button
                       onClick={handleLogout}
-                      className="dropdown-item"
+                      style={{ border: "none", background: "none", color: "red" }}
                     >
                       Logout
                     </button>
-                  </li>
-                </ul>
+                  </div>
+                )}
               </li>
-            )}
-          </ul>
-
-        </div>
+            </>
+          )}
+        </ul>
       </div>
     </nav>
   );
